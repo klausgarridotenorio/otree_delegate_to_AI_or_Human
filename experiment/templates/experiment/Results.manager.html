@@ -1,0 +1,117 @@
+{% if not deal_made %}
+  <div class="alert alert-warning" role="alert">
+    <h3 class="alert-heading">❌ No Deal Reached</h3>
+    <p>No agreement was reached on time.</p>
+    
+    <hr>
+    
+    <div class="row mt-3">
+      <div class="col-md-6">
+        <p class="mb-1"><strong>Company Profit:</strong></p>
+        <p class="text-danger display-6">-€{% if participant.choice == 'HS' %}20{% else %}10{% endif %}</p>
+        <small class="text-muted">No deal was made</small>
+      </div>
+      <div class="col-md-6">
+        <p class="mb-1"><strong>Delegation Cost:</strong></p>
+        <p class="text-danger">-€{% if participant.choice == 'HS' %}20{% else %}10{% endif %}</p>
+        <small class="text-muted">({% if participant.choice == 'HS' %}{% if baseline == True %}Human Agent A{% else %}Human Agent{% endif %}{% else %}{% if baseline == True %}Human Agent B{% else %}AI Agent{% endif %}{% endif %})</small>
+      </div>
+    </div>
+    
+    <hr>
+    
+    <p class="mb-0"><strong>Show-up Fee:</strong> <span class="badge bg-success">€5</span></p>
+  </div>
+
+{% else %}
+  <div class="card mb-4">
+    <div class="card-header bg-success text-white">
+      <h3 class="card-title mb-0">✅ Negotiation Results</h3>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <p><strong>Wholesale Price:</strong></p>
+          <p class="fs-5">€{{ formatted_deal_price }} <small class="text-muted">per unit</small></p>
+        </div>
+        <div class="col-md-6">
+          <p><strong>Quantity:</strong></p>
+          <p class="fs-5">{{ formatted_deal_quantity }} units</p>
+        </div>
+      </div>
+      <p class="mb-0"><strong>Realized Demand:</strong> {{ group.demand }} units</p>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header bg-info text-white">
+      <h5 class="card-title mb-0">Cost Breakdown</h5>
+    </div>
+    <div class="card-body">
+      <table class="table table-sm table-borderless">
+        <tr>
+          <td><strong>Product Class:</strong></td>
+          <td>{{ group.class_name }}</td>
+        </tr>
+        <tr>
+          <td><strong>Your Delegation Choice:</strong></td>
+          <td>{% if participant.choice == 'HS' %}{% if baseline == True %}Human Agent A{% else %}Human Agent{% endif %}{% else %}{% if baseline == True %}Human Agent B{% else %}AI Agent{% endif %}{% endif %}</td>
+        </tr>
+        <tr>
+          <td><strong>Counterpart's Choice:</strong></td>
+          <td>{% if other_manager_choice == 'HS' %}{% if baseline == True %}Human Agent A{% else %}Human Agent{% endif %}{% else %}{% if baseline == True %}Human Agent B{% else %}AI Agent{% endif %}{% endif %}</td>
+        </tr>
+        <tr class="border-top">
+          <td><strong>Base Delegation Cost:</strong></td>
+          <td>€{{ base_cost }}</td>
+        </tr>
+        <tr>
+          <td><strong>Transaction Cost:</strong></td>
+          <td>€{{ transaction_cost }}</td>
+        </tr>
+        <tr class="table-active fw-bold border-top">
+          <td>Total Delegation Cost:</td>
+          <td>€{{ delegation_cost }}</td>
+        </tr>
+        <tr>
+          <td><strong>Bonus to Delegee:</strong></td>
+          <td>€{{ bonus_delegee }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      <h5 class="card-title mb-0">Company Performance</h5>
+    </div>
+    <div class="card-body">
+      <p class="mb-2"><strong>Profit from Deal:</strong> <span class="text-success fs-5">€{{ formatted_profit }}</span></p>
+      <p class="mb-0">
+        <strong>Company Profit:</strong> <span class="text-success fs-5">€{{ company_profit }}</span><br>
+        <small class="text-muted">Company Profit = Profit from Deal - Delegation Cost - Bonus Delegee</small>
+      </p>
+    </div>
+  </div>
+
+  <div class="card border-warning mb-4">
+    <div class="card-header bg-warning">
+      <h5 class="card-title mb-0">💰 Your Compensation</h5>
+    </div>
+    <div class="card-body">
+      <p><strong>Bonus:</strong> 2.5% of company profits</p>
+      <p><strong>Payment:</strong> €{{ formatted_final_payment }} + Show-up Fee €5</p>
+      
+      <div class="alert alert-danger mt-3">
+        <strong>⚠️ Important - Please Remember:</strong><br>
+        <h4 class="mt-2">€{{ formatted_final_payment_plus_showup_5 }}</h4>
+        {% endif %}
+        <p class="mb-0">Enter this amount in your payment information. Incorrect amounts cannot be processed.</p>
+      </div>
+      
+      <a href="https://forms.office.com/pages/responsepage.aspx?id=32FVepllmEiKIMzkHbO0T7t9U-ZkpDlOvzzzRUx2HBZUNkhORlFDSzdLQ0tQRTRQSk1NN1NGTlc0SC4u&route=shorturl" target="_blank" class="btn btn-primary btn-lg w-100">
+        Fill in your bank details
+      </a>
+    </div>
+  </div>
+

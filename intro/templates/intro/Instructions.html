@@ -1,0 +1,280 @@
+{% block title %}
+  Instructions - {{ player.clean_role }} Agent
+{% endblock %}
+
+{% block styles %}
+  <style>
+    .pc-divider {
+      border-right: 4px double #000 !important;
+    }
+    .formula-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid #0d6efd;
+      padding: 15px;
+      margin: 15px 0;
+      font-family: 'Courier New', monospace;
+      border-radius: 4px;
+      font-weight: 500;
+      overflow-x: auto;
+    }
+    .example-box {
+      background-color: #e7f3ff;
+      border-left: 4px solid #17a2b8;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+    .section-card {
+      margin-bottom: 20px;
+    }
+    .image-container {
+      float: right;
+      margin-left: 15px;
+      margin-bottom: 15px;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+  <!-- Header Card -->
+  <div class="card section-card">
+    <div class="card-body">
+      <p>An economic experiment; there is no deception; your decision has real consequences.</p>
+      <p>
+        Carefully read the instructions, as you will be financially rewarded for
+        your performance.
+      </p>
+    </div>
+  </div>
+
+  <!-- Overview Card -->
+  <div class="card section-card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">📋 Overview</h5>
+    </div>
+    <div class="card-body">
+      <div class="image-container">
+        <img src="{% static 'experiment/image/Pellet.jpg' %}"
+             alt="Pellet Bag" width="240">
+      </div>
+      <p>
+        In this exercise, you will take the role of an employee at
+        {% player.clean_role %} company.
+      </p>
+      <ul class="mb-0">
+        <li>
+          {% if agent_1 == 'Human Agent A' %}
+            Both companies employ human agents to negotiate over bags of pellets
+          {%else %} 
+            Both companies employ AI Agents and humans to negotiate over bags of
+            pellets
+          {% endif %}
+        </li>
+        <li>
+          The item is produced by the supplying company at a Production Cost
+        <strong>(PC)</strong> of {% production_costs %}
+        </li>
+        <li>
+          This item is sold by the retailer company at a Retail Price <strong>(RP)</strong> of
+          11 
+        </li>
+        <li>
+          The Retailer and Supplier negotiate via chat on Wholesale Price <strong>(w)</strong> &
+          Quantity <strong>(q)</strong>
+        </li>
+        <li>
+          PC & RP are common knowledge and PC is drawn with equal probability.
+        </li>
+        <li>
+          After the negotiation, Demand <strong>(D)</strong> will be randomly drawn {% demand %}
+          (Equal Probability)
+        </li>
+        <li>
+          Supplier carries the risk of unsold inventory (any q > Demand will
+          expire)
+        </li>
+        {% if agent_1 == 'Human Agent A' %}
+          <li>
+            Your manager will choose to delegate an upcoming negotiation to you
+          </li>
+          <li>
+            You will negotiate and be financially compensated for the outcome
+          </li>
+        {%else %} 
+          <li>
+            Your manager will choose to delegate an upcoming negotiation to you or
+            an AI Agent
+          </li>
+          <li>
+            If the manager delegates it to you, you will negotiate and be financially
+            compensated for the outcome
+          </li>
+          <li>
+            If the manager delegates it to the AI Agent, you will not negotiate
+            and be Idle, but still be financially compensated for the outcome of the AI Agent
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <!-- Role Card -->
+  <div class="card section-card">
+    <div class="card-body">
+      <p class="mb-0">
+        For the rest of the experiment, you will be employed by the
+        <strong>{% player.clean_role %}</strong> company.
+      </p>
+    </div>
+  </div>
+
+  <!-- Objective Card -->
+  <div class="card section-card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">🎯 Objective</h5>
+    </div>
+    <div class="card-body">
+      <p class="mb-0">
+        Your goal is to agree on Wholesale Price <strong>(w)</strong> and Quantity <strong>(q)</strong>
+        maximizing your profits.
+      </p>
+    </div>
+  </div>
+
+  <!-- Terms of Negotiation Card -->
+  <div class="card section-card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">📝 Terms of Negotiation</h5>
+    </div>
+    <div class="card-body">
+      <ul class="mb-0">
+        <li>
+          <strong>Quantity (q)</strong>
+          Ranges from {% C.DEMAND_MIN %} to {% C.DEMAND_MAX %} without decimals
+        </li>
+        <li>
+          <strong>Wholesale Price (w)</strong>
+          Denoted in euros (€) with two decimals
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card section-card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">💼 Roles and Profit Calculation</h5>
+    </div>
+    <div class="card-body">
+
+
+      <h6 class="mb-3">Supplier Profit</h6>
+      <div class="formula-box">
+        <strong>Supplier Profit = w * min(q, D) - PC * q</strong>
+      </div>
+      <p><strong>Example:</strong></p>
+      <p>Your Production Cost (PC) is 4€, and you just agreed with the
+        retailer on a wholesale price (w) of 7€ and a quantity (q) of
+        50:</p>
+      <div class="example-box">
+        <ul class="mb-0">
+          <li>
+            Demand (D) is 75: 7 * min(50, 75) - 4 * 50 = 150€
+          </li>
+          <li>
+            Demand (D) is 25: 7 * min(50, 25) - 4 * 50 = - 25€
+          </li>
+          <li>
+            Demand (D) is 50: 7 * min(50, 50) - 4 * 50 = 150€
+          </li>
+        </ul>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="alert alert-info py-2 px-3 mb-4" role="alert">
+        💡 Explanation of  <strong><code>min(q, D)</code>:</strong> This represents the <strong>minimum</strong> value between q and D. For example, <code>min(10, 100) = 10</code>.
+      </div>
+
+      <h6 class="mb-3">Retailer Profit</h6>
+      <div class="formula-box">
+        <strong>Retailer Profit = (RP - w) * min(q, D)</strong>
+      </div>
+      <p><strong>Example:</strong></p>
+      <p>Your Retail Price (RP) is 11€, and you just agreed with the
+        retailer on a wholesale price (w) of 7€ and a quantity (q) of 50:</p>
+      <div class="example-box">
+        <ul class="mb-0">
+          <li>
+            Demand (D) is 75: (11-7) * min(50, 75) = 200€
+          </li>
+          <li>
+            Demand (D) is 25: (11-7) * min(50, 25) = 100€
+          </li>
+          <li>
+            Demand (D) is 50: (11-7) * min(50, 50) = 200€
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions Card -->
+  <div class="card section-card">
+    <div class="card-header bg-light">
+      <h5 class="mb-0">💵 Monetary Compensation</h5>
+    </div>
+    <div class="card-body">
+      <ul class="mb-0">
+        {% if agent_1 == 'Human Agent A' %}
+          <li>
+            Your profit from the negotiation divided by 50 determines your
+            bonus.
+          </li>
+          <li>
+            This bonus + the show-up fee of 5€ yields your financial reward. <strong>(Negative profit = No bonus)</strong>
+          </li>
+          <li>
+            To warm up, you will have to answer five profit calculation
+            comprehension checks.
+          </li>
+          <li>
+            You will negotiate against another human participant.
+          </li>
+          <li>
+            You have {% timeout %} minutes to reach an agreement. If the time runs
+            out the outcome is an impasse (disagreement), both your profit and
+            your counterpart's profit will be zero.
+          </li>
+        {%else %} 
+          <li>
+            If the negotiation is delegated to you, the profit from the
+            negotiation divided by 50 determines your bonus.<br>
+          </li>
+          <li>
+            This bonus + the show-up fee of 5€ yields your financial reward. <strong>(Negative profit = No bonus)</strong>
+            </li>
+          <li> 
+            If your manager delegates the negotiation to an AI Agent your bonus will
+             be the profits from the AI agent divided by 50.
+          </li>
+          <li>
+            To warm up, you will have to answer five profit calculation
+            comprehension checks.
+          </li>
+          <li>
+            You may negotiate against another human participant or with an AI
+            Agent counterpart.
+          </li>
+          <li>
+            You have {% timeout %} minutes to reach an agreement. If the time runs
+            out the outcome is an impasse (disagreement), both your profit and
+            your counterpart's profit will be zero.
+          </li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+
+  <br>
+  {% next_button %}
+{% endblock %}
